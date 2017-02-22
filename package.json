@@ -30,14 +30,16 @@
     "url": "https://github.com/NickNaso/ghostscript4js.git"
   },
   "bugs": {
-    "url": "https://github.com/NickNaso/ghostscript4js/issues"
+    "url": "https://github.com/NickNaso/magick-cli/issues"
   },
   "homepage": "http://www.nacios.it/",
   "dependencies": {
     "bindings": "^1.2.1",
     "nan": "^2.5.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jasmine": "^2.5.3"
+  },
   "files": [
     "LICENSE",
     "README.md",
