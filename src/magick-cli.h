@@ -16,16 +16,19 @@
  * Nicola Del Gobbo <nicoladelgobbo@gmail.com>
  ******************************************************************************/
 
-'use strict'
+#ifndef MAGICK_CLI_H
+#define MAGICK_CLI_H
 
-/*!
- * Module dependencies
- */
-const MagickCLI = require('../')
+#include <sstream>
+#include <string>
 
-describe('Test magick-cli', function () {
+#include <node.h>
+#include <node_buffer.h>
+#include <v8.h>
+#include <nan.h>
 
-    console.log(MagickCLI.version())
+using namespace Nan;
+using namespace v8;
+using namespace std;
 
-
-})
+#endif //MAGICK_CLI_H

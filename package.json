@@ -1,6 +1,6 @@
 {
   "name": "magick-cli",
-  "description": "Bindings for the Ghostscript C API to bring Ghostscript power to the Node.JS world.",
+  "description": "Native ImageMagick CLI for Node.js",
   "version": "1.0.0",
   "contributors": [
     {
@@ -9,12 +9,34 @@
     }
   ],
   "keywords": [
-    "ghostscript",
-    "postscript",
-    "native",
-    "pdf",
-    "ps",
-    "eps"
+    "ImageMagick",
+    "cli",
+    "image",
+    "processing",
+    "PNG",
+    "JPEG",
+    "JPEG-2000",
+    "GIF",
+    "TIFF",
+    "DPX",
+    "EXR",
+    "WebP",
+    "Postscript",
+    "PDF",
+    "SVG",
+    "resize",
+    "flip",
+    "mirror",
+    "rotate",
+    "distort",
+    "transform",
+    "colors",
+    "effects",
+    "Bézier",
+    "polygons",
+    "text",
+    "line",
+    "ellipses"
   ],
   "license": "Apache-2.0",
   "scripts": {
@@ -27,7 +49,7 @@
   "gypfile": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/NickNaso/ghostscript4js.git"
+    "url": "https://github.com/NickNaso/magick-cli.git"
   },
   "bugs": {
     "url": "https://github.com/NickNaso/magick-cli/issues"
