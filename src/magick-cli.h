@@ -23,12 +23,20 @@
 #include <string>
 
 #include <node.h>
-#include <node_buffer.h>
+#include <node_buffer.h>                            
 #include <v8.h>
 #include <nan.h>
 
 using namespace Nan;
 using namespace v8;
 using namespace std;
+
+//#include <Magick++.h>
+
+#include <wand/MagickWand.h>
+#include <magick/MagickCore.h>
+//#include <magick/studio.h>
+//#include <magick/exception.h>
+//#include <magick/image.h>
 
 #endif //MAGICK_CLI_H

@@ -111,6 +111,9 @@ NAN_METHOD(Execute)
 NAN_METHOD(ExecuteSync)
 {
     Nan::HandleScope();
+    int i = 0;  
+    MagickWand *magick_wand;
+
     /*if (info.Length() < 1) {
         return Nan::ThrowError("Sorry executeSync() method requires 1 argument that represent the Ghostscript command.");
     }
