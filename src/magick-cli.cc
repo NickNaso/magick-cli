@@ -60,9 +60,7 @@ NAN_METHOD(ExecuteSync)
         ExceptionInfo *exception = AcquireExceptionInfo();
 
         int arg_count;
-        char *args[] = {"magick", "-size", "100x100", "xc:red",
-                        "(", "rose:", "-rotate", "-90", ")",
-                        "+append", "show:", NULL};
+        char *args[] = {"magick", "js.png", "-resize", "50%",  "pippo.png", NULL};
 
         for (arg_count = 0; args[arg_count] != (char *)NULL; arg_count++)
             ;
