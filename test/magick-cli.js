@@ -25,7 +25,10 @@ const MagickCLI = require('../')
 
 describe('Test magick-cli', function () {
 
-    console.log(MagickCLI.version())
-    
+    it('Should return the version of ImageMagick', function () {
+        expect(MagickCLI.version()).not.toBe(null)
+        expect(MagickCLI.version()).toContain("7.");
+    })
+
 
 })
