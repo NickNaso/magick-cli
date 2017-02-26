@@ -14,12 +14,11 @@
  *
  * Contributors - initial API implementation:
  * Nicola Del Gobbo <nicoladelgobbo@gmail.com>
- * Mauro Doganieri <mauro.doganieri@gmail.com>
  ******************************************************************************/
 
 #include "magick-cli.h"
 
-class MagickCLIWorker : public AsyncWorker
+/*class MagickCLIWorker : public AsyncWorker
 {
   public:
     MagickCLIWorker(Callback *callback, string RAWcmd)
@@ -79,7 +78,7 @@ class MagickCLIWorker : public AsyncWorker
     string RAWcmd;
     int res;
     stringstream msg;
-};
+};*/
 
 NAN_METHOD(Version)
 {
@@ -87,15 +86,15 @@ NAN_METHOD(Version)
     info.GetReturnValue().Set(Nan::New<String>(MagickLibVersionText).ToLocalChecked());
 }
 
-NAN_METHOD(Execute)
+/*NAN_METHOD(Execute)
 {
     //Callback *callback = new Callback(info[1].As<Function>());
     //Local<String> JScmd = Local<String>::Cast(info[0]);
     //string RAWcmd = *String::Utf8Value(JScmd);
     //AsyncQueueWorker(new GhostscriptWorker(callback, RAWcmd));
-}
+}*/
 
-NAN_METHOD(ExecuteSync)
+/*NAN_METHOD(ExecuteSync)
 {
     Nan::HandleScope();
     if (info.Length() < 1)
@@ -174,7 +173,7 @@ NAN_METHOD(ExecuteSync)
         msg << "Sorry error happened executing Ghostscript command. Error code: " << code;
         return Nan::ThrowError(Nan::New<String>(msg.str()).ToLocalChecked());
     } */
-}
+//}
 
 //////////////////////////// INIT & CONFIG MODULE //////////////////////////////
 
@@ -183,11 +182,11 @@ void Init(Local<Object> exports)
     exports->Set(Nan::New("version").ToLocalChecked(),
                  Nan::New<FunctionTemplate>(Version)->GetFunction());
 
-    exports->Set(Nan::New("execute").ToLocalChecked(),
-                 Nan::New<FunctionTemplate>(Execute)->GetFunction());
+    /*exports->Set(Nan::New("execute").ToLocalChecked(),
+                 Nan::New<FunctionTemplate>(Execute)->GetFunction());*/
 
-    exports->Set(Nan::New("executeSync").ToLocalChecked(),
-                 Nan::New<FunctionTemplate>(ExecuteSync)->GetFunction());
+    /*exports->Set(Nan::New("executeSync").ToLocalChecked(),
+                 Nan::New<FunctionTemplate>(ExecuteSync)->GetFunction());*/
 }
 
 NODE_MODULE(MagickCLI, Init)
