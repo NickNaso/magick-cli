@@ -26,6 +26,6 @@ const MagickCLI = require('../')
 describe('Test magick-cli', function () {
 
     console.log(MagickCLI.version())
-
+    
 
 })

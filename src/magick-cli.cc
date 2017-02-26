@@ -19,14 +19,16 @@
 
 #include "magick-cli.h"
 
-class MagickCLIWorker : public AsyncWorker {
-    public:
-        MagickCLIWorker(Callback *callback, string RAWcmd) 
-            : AsyncWorker(callback), RAWcmd(RAWcmd), res(0) {}
-        ~MagickCLIWorker() {} 
+class MagickCLIWorker : public AsyncWorker
+{
+  public:
+    MagickCLIWorker(Callback *callback, string RAWcmd)
+        : AsyncWorker(callback), RAWcmd(RAWcmd), res(0) {}
+    ~MagickCLIWorker() {}
 
-        void Execute() {
-            /*res = 0;
+    void Execute()
+    {
+        /*res = 0;
             vector<string> explodedCmd;
             istringstream iss(RAWcmd);
             for(string RAWcmd; iss >> RAWcmd;)
@@ -58,46 +60,31 @@ class MagickCLIWorker : public AsyncWorker {
                     res = 1;
                 }        
             }
-            delete[] gsargv;*/     
-        }
+            delete[] gsargv;*/
+    }
 
-        void HandleOKCallback() {
-            Nan::HandleScope();
-            /*Local<Value> argv[1];
+    void HandleOKCallback()
+    {
+        Nan::HandleScope();
+        /*Local<Value> argv[1];
             if (res == 0) {
                 argv[0] = Null();
             } else {
                 argv[0] = Error(Nan::New<String>(msg.str()).ToLocalChecked());
             }
             callback->Call(1, argv);*/
-        } 
+    }
 
-        private:
-            string RAWcmd;
-            int res;
-            stringstream msg;
+  private:
+    string RAWcmd;
+    int res;
+    stringstream msg;
 };
 
 NAN_METHOD(Version)
 {
     Nan::HandleScope();
-    /*Local<Object> obj  = Nan::New<Object>();
-    gsapi_revision_t r;
-    int res = gsapi_revision(&r, sizeof(r));
-    if ( res == 0) {
-        obj->Set(Nan::New<String>("product").ToLocalChecked(), Nan::New<String>(r.product).ToLocalChecked());
-        obj->Set(Nan::New<String>("copyright").ToLocalChecked(), Nan::New<String>(r.copyright).ToLocalChecked());
-        obj->Set(Nan::New<String>("revision").ToLocalChecked(), Nan::New<Number>(r.revision));
-        obj->Set(Nan::New<String>("revisiondate").ToLocalChecked(), Nan::New<Number>(r.revisiondate));
-    } else {
-        std::stringstream msg; 
-        msg << "Sorry error happened retrieving Ghostscript version info. Error code: " << res; 
-        return Nan::ThrowError(Nan::New<String>(msg.str()).ToLocalChecked());
-    }
-    info.GetReturnValue().Set(obj);*/
-    info.GetReturnValue().Set(Nan::New("This is a seed project to build Node.js native module.").ToLocalChecked());
-
-
+    info.GetReturnValue().Set(Nan::New<String>(MagickLibVersionText).ToLocalChecked());
 }
 
 NAN_METHOD(Execute)
@@ -105,28 +92,58 @@ NAN_METHOD(Execute)
     //Callback *callback = new Callback(info[1].As<Function>());
     //Local<String> JScmd = Local<String>::Cast(info[0]);
     //string RAWcmd = *String::Utf8Value(JScmd);
-    //AsyncQueueWorker(new GhostscriptWorker(callback, RAWcmd));    
+    //AsyncQueueWorker(new GhostscriptWorker(callback, RAWcmd));
 }
 
 NAN_METHOD(ExecuteSync)
 {
     Nan::HandleScope();
-    int i = 0;  
-    MagickWand *magick_wand;
-
-    /*if (info.Length() < 1) {
-        return Nan::ThrowError("Sorry executeSync() method requires 1 argument that represent the Ghostscript command.");
+    if (info.Length() < 1)
+    {
+        return Nan::ThrowError("Sorry executeSync() method requires 1 argument that represent the ImageMagick command.");
     }
-    if (!info[0]->IsString()) {
+    if (!info[0]->IsString())
+    {
         return Nan::ThrowError("Sorry executeSync() method's argument should be a string.");
     }
-    Local<String> JScmd = Local<String>::Cast(info[0]);
-    string RAWcmd = *String::Utf8Value(JScmd);
+
+    Local<String> IMcmd = Local<String>::Cast(info[0]);
+    string RAWcmd = *String::Utf8Value(IMcmd);
     vector<string> explodedCmd;
     istringstream iss(RAWcmd);
-    for(string RAWcmd; iss >> RAWcmd;)
+    for (string RAWcmd; iss >> RAWcmd;)
         explodedCmd.push_back(RAWcmd);
-    void *minst;
+
+    MagickCoreGenesis("js.png", MagickFalse);
+
+    {
+        MagickBooleanType status;
+
+        ImageInfo *image_info = AcquireImageInfo();
+        ExceptionInfo *exception = AcquireExceptionInfo();
+
+        int arg_count;
+        char *args[] = {"magick", "-size", "100x100", "xc:red",
+                        "(", "rose:", "-rotate", "-90", ")",
+                        "+append", "show:", NULL};
+
+        for (arg_count = 0; args[arg_count] != (char *)NULL; arg_count++)
+            ;
+
+        (void)MagickImageCommand(image_info, arg_count, args, NULL, exception);
+
+        if (exception->severity != UndefinedException)
+        {
+            CatchException(exception);
+            //fprintf(stderr, "Major Error Detected\n");
+        }
+
+        image_info = DestroyImageInfo(image_info);
+        exception = DestroyExceptionInfo(exception);
+    }
+    MagickCoreTerminus();
+
+    /*void *minst;
     int code, exit_code;
     int gsargc = static_cast<int>(explodedCmd.size());    
     char ** gsargv = new char*[gsargc];
@@ -156,7 +173,7 @@ NAN_METHOD(ExecuteSync)
         stringstream msg; 
         msg << "Sorry error happened executing Ghostscript command. Error code: " << code;
         return Nan::ThrowError(Nan::New<String>(msg.str()).ToLocalChecked());
-    } */ 
+    } */
 }
 
 //////////////////////////// INIT & CONFIG MODULE //////////////////////////////
@@ -170,7 +187,7 @@ void Init(Local<Object> exports)
                  Nan::New<FunctionTemplate>(Execute)->GetFunction());
 
     exports->Set(Nan::New("executeSync").ToLocalChecked(),
-                 Nan::New<FunctionTemplate>(ExecuteSync)->GetFunction());                     
+                 Nan::New<FunctionTemplate>(ExecuteSync)->GetFunction());
 }
 
 NODE_MODULE(MagickCLI, Init)

@@ -31,12 +31,14 @@ using namespace Nan;
 using namespace v8;
 using namespace std;
 
-//#include <Magick++.h>
+// MagickCore
+#include <MagickCore/MagickCore.h>
+#include <MagickCore/studio.h>
+#include <MagickCore/exception.h>
+#include <MagickCore/image.h>
 
-#include <wand/MagickWand.h>
-#include <magick/MagickCore.h>
-//#include <magick/studio.h>
-//#include <magick/exception.h>
-//#include <magick/image.h>
+// MagickWand
+#include <MagickWand/MagickWand.h>
+#include <MagickWand/magick-cli.h>
 
 #endif //MAGICK_CLI_H
