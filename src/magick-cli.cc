@@ -51,7 +51,7 @@ NAN_METHOD(ExecuteSync)
     for (string RAWcmd; iss >> RAWcmd;)
         explodedCmd.push_back(RAWcmd);*/
 
-    MagickCoreGenesis("js.png", MagickFalse);
+    MagickCoreGenesis("MagickCLI", MagickFalse);
 
     {
         MagickBooleanType status;
@@ -77,9 +77,7 @@ NAN_METHOD(ExecuteSync)
         image_info = DestroyImageInfo(image_info);
         exception = DestroyExceptionInfo(exception);
     }
-    MagickCoreTerminus();
-
-    
+    MagickCoreTerminus();  
 }
 
 //////////////////////////// INIT & CONFIG MODULE //////////////////////////////
