@@ -18,68 +18,6 @@
 
 #include "magick-cli.h"
 
-/*class MagickCLIWorker : public AsyncWorker
-{
-  public:
-    MagickCLIWorker(Callback *callback, string RAWcmd)
-        : AsyncWorker(callback), RAWcmd(RAWcmd), res(0) {}
-    ~MagickCLIWorker() {}
-
-    void Execute()
-    {
-        /*res = 0;
-            vector<string> explodedCmd;
-            istringstream iss(RAWcmd);
-            for(string RAWcmd; iss >> RAWcmd;)
-                explodedCmd.push_back(RAWcmd);
-            void *minst;
-            int code, exit_code;
-            int gsargc = static_cast<int>(explodedCmd.size());
-            char ** gsargv = new char*[gsargc];
-            for(int i = 0; i < gsargc; i++) {
-                gsargv[i] = (char*)explodedCmd[i].c_str();
-            }
-            code = gsapi_new_instance(&minst, NULL);
-            if (code < 0) {
-                msg << "Sorry error happened creating Ghostscript instance. Error code: " << code;
-                res = 1;
-            } else {
-                gsapi_set_stdio(minst, gsdll_stdin, gsdll_stdout, gsdll_stderr);
-                code = gsapi_set_arg_encoding(minst, GS_ARG_ENCODING_UTF8);
-                if (code == 0)
-                    code = gsapi_init_with_args(minst, gsargc, gsargv); 
-                exit_code = gsapi_exit(minst);
-                if ((code == 0) || (code == gs_error_Quit))
-                    code = exit_code;
-                gsapi_delete_instance(minst);
-                if ((code == 0) || (code == gs_error_Quit)) {
-                    res = 0;
-                } else {
-                    msg << "Sorry error happened executing Ghostscript command. Error code: " << code;
-                    res = 1;
-                }        
-            }
-            delete[] gsargv;*/
-    //}
-
-    //void HandleOKCallback()
-    //{
-        //Nan::HandleScope();
-        /*Local<Value> argv[1];
-            if (res == 0) {
-                argv[0] = Null();
-            } else {
-                argv[0] = Error(Nan::New<String>(msg.str()).ToLocalChecked());
-            }
-            callback->Call(1, argv);*/
-    //}
-
-  /*private:
-    string RAWcmd;
-    int res;
-    stringstream msg;
-};*/
-
 NAN_METHOD(Version)
 {
     Nan::HandleScope();
@@ -94,10 +32,10 @@ NAN_METHOD(Version)
     //AsyncQueueWorker(new GhostscriptWorker(callback, RAWcmd));
 }*/
 
-/*NAN_METHOD(ExecuteSync)
+NAN_METHOD(ExecuteSync)
 {
     Nan::HandleScope();
-    if (info.Length() < 1)
+    /*if (info.Length() < 1)
     {
         return Nan::ThrowError("Sorry executeSync() method requires 1 argument that represent the ImageMagick command.");
     }
@@ -111,7 +49,7 @@ NAN_METHOD(Version)
     vector<string> explodedCmd;
     istringstream iss(RAWcmd);
     for (string RAWcmd; iss >> RAWcmd;)
-        explodedCmd.push_back(RAWcmd);
+        explodedCmd.push_back(RAWcmd);*/
 
     MagickCoreGenesis("js.png", MagickFalse);
 
@@ -134,6 +72,7 @@ NAN_METHOD(Version)
         if (exception->severity != UndefinedException)
         {
             CatchException(exception);
+            // TODO handle the error response
             //fprintf(stderr, "Major Error Detected\n");
         }
 
@@ -142,38 +81,8 @@ NAN_METHOD(Version)
     }
     MagickCoreTerminus();
 
-    /*void *minst;
-    int code, exit_code;
-    int gsargc = static_cast<int>(explodedCmd.size());    
-    char ** gsargv = new char*[gsargc];
-    for(int i = 0; i < gsargc; i++) {
-        gsargv[i] = (char*)explodedCmd[i].c_str();
-    }
-    code = gsapi_new_instance(&minst, NULL);
-    if (code < 0) {
-        delete[] gsargv;
-        stringstream msg; 
-        msg << "Sorry error happened creating Ghostscript instance. Error code: " << code;
-        return Nan::ThrowError(Nan::New<String>(msg.str()).ToLocalChecked());
-    }    
-    gsapi_set_stdio(minst, gsdll_stdin, gsdll_stdout, gsdll_stderr);
-    code = gsapi_set_arg_encoding(minst, GS_ARG_ENCODING_UTF8); 
-    if (code == 0)
-        code = gsapi_init_with_args(minst, gsargc, gsargv);
-    exit_code = gsapi_exit(minst);
-    if ((code == 0) || (code == gs_error_Quit))
-	code = exit_code;
-    gsapi_delete_instance(minst);
-    if ((code == 0) || (code == gs_error_Quit)) {
-        delete[] gsargv;
-        return;
-    } else {
-        delete[] gsargv;
-        stringstream msg; 
-        msg << "Sorry error happened executing Ghostscript command. Error code: " << code;
-        return Nan::ThrowError(Nan::New<String>(msg.str()).ToLocalChecked());
-    } */
-//}
+    
+}
 
 //////////////////////////// INIT & CONFIG MODULE //////////////////////////////
 
@@ -185,8 +94,8 @@ void Init(Local<Object> exports)
     /*exports->Set(Nan::New("execute").ToLocalChecked(),
                  Nan::New<FunctionTemplate>(Execute)->GetFunction());*/
 
-    /*exports->Set(Nan::New("executeSync").ToLocalChecked(),
-                 Nan::New<FunctionTemplate>(ExecuteSync)->GetFunction());*/
+    exports->Set(Nan::New("executeSync").ToLocalChecked(),
+                 Nan::New<FunctionTemplate>(ExecuteSync)->GetFunction());
 }
 
 NODE_MODULE(MagickCLI, Init)
