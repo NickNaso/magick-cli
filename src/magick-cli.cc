@@ -60,11 +60,11 @@
                 }        
             }
             delete[] gsargv;*/
-    }
+    //}
 
-    void HandleOKCallback()
-    {
-        Nan::HandleScope();
+    //void HandleOKCallback()
+    //{
+        //Nan::HandleScope();
         /*Local<Value> argv[1];
             if (res == 0) {
                 argv[0] = Null();
@@ -72,9 +72,9 @@
                 argv[0] = Error(Nan::New<String>(msg.str()).ToLocalChecked());
             }
             callback->Call(1, argv);*/
-    }
+    //}
 
-  private:
+  /*private:
     string RAWcmd;
     int res;
     stringstream msg;
@@ -157,7 +157,7 @@ NAN_METHOD(Version)
         return Nan::ThrowError(Nan::New<String>(msg.str()).ToLocalChecked());
     }    
     gsapi_set_stdio(minst, gsdll_stdin, gsdll_stdout, gsdll_stderr);
-    code = gsapi_set_arg_encoding(minst, GS_ARG_ENCODING_UTF8);
+    code = gsapi_set_arg_encoding(minst, GS_ARG_ENCODING_UTF8); 
     if (code == 0)
         code = gsapi_init_with_args(minst, gsargc, gsargv);
     exit_code = gsapi_exit(minst);
