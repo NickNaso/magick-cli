@@ -35,7 +35,7 @@ NAN_METHOD(Version)
 NAN_METHOD(ExecuteSync)
 {
     Nan::HandleScope();
-    /*if (info.Length() < 1)
+    if (info.Length() < 1)
     {
         return Nan::ThrowError("Sorry executeSync() method requires 1 argument that represent the ImageMagick command.");
     }
@@ -43,35 +43,27 @@ NAN_METHOD(ExecuteSync)
     {
         return Nan::ThrowError("Sorry executeSync() method's argument should be a string.");
     }
-
     Local<String> IMcmd = Local<String>::Cast(info[0]);
     string RAWcmd = *String::Utf8Value(IMcmd);
     vector<string> explodedCmd;
     istringstream iss(RAWcmd);
     for (string RAWcmd; iss >> RAWcmd;)
-        explodedCmd.push_back(RAWcmd);*/
-
+        explodedCmd.push_back(RAWcmd); 
+    int imargc = static_cast<int>(explodedCmd.size());
+    char ** imargv = new char*[imargc];
+    for(int i = 0; i < imargc; i++) {
+        imargv[i] = (char*)explodedCmd[i].c_str();
+    }
     MagickCoreGenesis("MagickCLI", MagickFalse);
-
     {
         MagickBooleanType status;
-
         ImageInfo *image_info = AcquireImageInfo();
         ExceptionInfo *exception = AcquireExceptionInfo();
-
-        int arg_count;
-        char *args[] = {"magick", "js.png", "-resize", "50%",  "pippo.png", NULL};
-
-        for (arg_count = 0; args[arg_count] != (char *)NULL; arg_count++)
-            ;
-
-        (void)MagickImageCommand(image_info, arg_count, args, NULL, exception);
-
+        (void)MagickImageCommand(image_info, imargc, imargv, NULL, exception);
         if (exception->severity != UndefinedException)
         {
             CatchException(exception);
-            // TODO handle the error response
-            //fprintf(stderr, "Major Error Detected\n");
+            
         }
 
         image_info = DestroyImageInfo(image_info);
