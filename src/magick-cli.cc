@@ -18,19 +18,71 @@
 
 #include "magick-cli.h"
 
+class ImageMagickWorker : public AsyncWorker {
+    public:
+        ImageMagickWorker(Callback *callback, string RAWcmd) 
+            : AsyncWorker(callback), RAWcmd(RAWcmd), res(0) {}
+        ~ImageMagickWorker() {} 
+
+        void Execute() {
+            res = 0;
+            vector<string> explodedCmd;
+            istringstream iss(RAWcmd);
+            for (string RAWcmd; iss >> RAWcmd;)
+                explodedCmd.push_back(RAWcmd); 
+            int imargc = static_cast<int>(explodedCmd.size());
+            char ** imargv = new char*[imargc];
+            for(int i = 0; i < imargc; i++) {
+                imargv[i] = (char*)explodedCmd[i].c_str();
+            }
+            MagickCoreGenesis("MagickCLI", MagickFalse);
+            {
+                ImageInfo *image_info = AcquireImageInfo();
+                ExceptionInfo *exception = AcquireExceptionInfo();
+                (void)MagickImageCommand(image_info, imargc, imargv, NULL, exception);
+                if (exception->severity != UndefinedException) {
+                    msg <<  "Sorry error happened executing ImageMagick command. Error: " << exception->reason << ". " << exception->description;
+                    res = 1;
+                } else {
+                    res = 0;
+                }
+                delete[] imargv;
+                image_info = DestroyImageInfo(image_info);
+                exception = DestroyExceptionInfo(exception);
+            }
+            MagickCoreTerminus();
+        }
+
+        void HandleOKCallback() {
+            Nan::HandleScope();
+            Local<Value> argv[1];
+            if (res == 0) {
+                argv[0] = Null();
+            } else {
+                argv[0] = Error(Nan::New<String>(msg.str()).ToLocalChecked());
+            }
+            callback->Call(1, argv);
+        } 
+
+        private:
+            string RAWcmd;
+            int res;
+            stringstream msg;
+};
+
 NAN_METHOD(Version)
 {
     Nan::HandleScope();
     info.GetReturnValue().Set(Nan::New<String>(MagickLibVersionText).ToLocalChecked());
 }
 
-/*NAN_METHOD(Execute)
+NAN_METHOD(Execute)
 {
-    //Callback *callback = new Callback(info[1].As<Function>());
-    //Local<String> JScmd = Local<String>::Cast(info[0]);
-    //string RAWcmd = *String::Utf8Value(JScmd);
-    //AsyncQueueWorker(new GhostscriptWorker(callback, RAWcmd));
-}*/
+    Callback *callback = new Callback(info[1].As<Function>());
+    Local<String> JScmd = Local<String>::Cast(info[0]);
+    string RAWcmd = *String::Utf8Value(JScmd);
+    AsyncQueueWorker(new ImageMagickWorker(callback, RAWcmd));
+}
 
 NAN_METHOD(ExecuteSync)
 {
@@ -84,8 +136,8 @@ void Init(Local<Object> exports)
     exports->Set(Nan::New("version").ToLocalChecked(),
                  Nan::New<FunctionTemplate>(Version)->GetFunction());
 
-    /*exports->Set(Nan::New("execute").ToLocalChecked(),
-                 Nan::New<FunctionTemplate>(Execute)->GetFunction());*/
+    exports->Set(Nan::New("execute").ToLocalChecked(),
+                 Nan::New<FunctionTemplate>(Execute)->GetFunction());
 
     exports->Set(Nan::New("executeSync").ToLocalChecked(),
                  Nan::New<FunctionTemplate>(ExecuteSync)->GetFunction());
