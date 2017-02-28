@@ -35,7 +35,6 @@ describe('Test magick-cli', function () {
             MagickCLI.executeSync('magick js.png -resize 50% pippo.png')
         } catch (err) {
             // Handle err
-            consoe.log(err);
             throw err
         }
     })
