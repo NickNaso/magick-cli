@@ -56,20 +56,25 @@ NAN_METHOD(ExecuteSync)
     }
     MagickCoreGenesis("MagickCLI", MagickFalse);
     {
-        MagickBooleanType status;
         ImageInfo *image_info = AcquireImageInfo();
         ExceptionInfo *exception = AcquireExceptionInfo();
         (void)MagickImageCommand(image_info, imargc, imargv, NULL, exception);
         if (exception->severity != UndefinedException)
         {
-            CatchException(exception);
-            
-        }
-
+            delete[] imargv;
+            stringstream msg; 
+            msg << "Sorry error happened executing ImageMagick command. Error: " << exception->reason << ". " << exception->description;
+            image_info = DestroyImageInfo(image_info);
+            exception = DestroyExceptionInfo(exception);
+            MagickCoreTerminus();
+            return Nan::ThrowError(Nan::New<String>(msg.str()).ToLocalChecked()); 
+        } 
+        delete[] imargv;
         image_info = DestroyImageInfo(image_info);
         exception = DestroyExceptionInfo(exception);
     }
-    MagickCoreTerminus();  
+    MagickCoreTerminus();
+    return;  
 }
 
 //////////////////////////// INIT & CONFIG MODULE //////////////////////////////
