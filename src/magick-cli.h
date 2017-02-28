@@ -22,8 +22,7 @@
 #include <sstream>
 #include <string>
 
-#include <node.h>
-#include <node_buffer.h>                            
+#include <node.h>                       
 #include <v8.h>
 #include <nan.h>
 
