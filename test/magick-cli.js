@@ -22,6 +22,24 @@
  * Module dependencies
  */
 const MagickCLI = require('../')
+const fs = require('fs')
+
+process.chdir(__dirname)
+
+const source = 'js.png'
+const outSync = 'jsSync.png'
+const outAsync = 'jsAsync.png'
+const cmdSync = `magick ${source} -resize 50% ${outSync}`
+const cmdAsync = `magick ${source} -resize 50% ${outAsync}`
+
+console.log('Start cleanup ...')
+try {
+  fs.unlinkSync(outSync)
+  fs.unlinkSync(outAsync)
+  console.log('Cleanup competed')
+} catch (err) {
+  console.log('Nothing to clean');
+}
 
 describe('Test magick-cli', function () {
 
@@ -32,11 +50,23 @@ describe('Test magick-cli', function () {
 
     it('Should execute ImageMagick command synchronous', function () {
         try {
-            MagickCLI.executeSync('magick js.png -resize 50% pippo.png')
+            MagickCLI.executeSync(cmdSync)
         } catch (err) {
             // Handle err
             throw err
         }
+    })
+
+    it('Should execute ImageMagick command asynchronous', function (done) {
+        MagickCLI.execute(cmdAsync)
+        .then(() => {
+            done()
+        })
+        .catch((err) => {
+            console.log(err)
+            done()
+        })
+
     })
 
 
