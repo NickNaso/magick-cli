@@ -1,4 +1,18 @@
-# magick-cli
-Native ImageMagick CLI for Node.js
+# MagickCLI
 
-## This project is not yet finished give me another time :-)
+## Native ImageMagick CLI for Node.js
+
+<p align="center">
+<img src=""/>
+</p>
+
+* [Introduction](#introduction)
+* [Motivations](#motivations)
+* [Prerequisites](#prerequisites)
+* [Installation](#install)
+* [Installation options](#installoptions)
+* [Usage](#usage)
+* [Team](#team)
+* [Acknowledgements](#acknowledgements)
+* [License](#license)
+
