@@ -2,9 +2,7 @@
 
 ## Native ImageMagick CLI for Node.js
 
-<p align="center">
-<img src=""/>
-</p>
+
 
 * [Introduction](#introduction)
 * [Motivations](#motivations)
