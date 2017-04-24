@@ -8,6 +8,7 @@
             "include_dirs": [
                 "<!(node -e \"require('nan')\")"
             ],
+            # Check if it work for all version of macos
             'xcode_settings': {
                 'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
                 'OTHER_CFLAGS': [
