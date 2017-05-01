@@ -20,43 +20,20 @@
           ]
         }],
         ['OS=="win"', {
-          "conditions": [
-            ['target_arch=="x64"', {
-              "variables": {
-                "GS4JS_HOME%": "<!(node gs4js-env-home.js)",  
-                "GS4JS_LIB%": "gsdll64.lib",
-                "GS4JS_DLL%": "gsdll64.dll",
-                "conditions": [
-                  ['"<!(node gs4js-env-home.js)" == ""', {
-                    "GS4JS_HOME%": "C:/gs/bin"
-                  }]
-                ]
-              }
-            }, 
-            {
-              "variables": { 
-                "GS4JS_HOME%": "<!(node gs4js-env-home.js)",  
-                "GS4JS_LIB%": "gsdll32.lib",
-                "GS4JS_DLL%": "gsdll32.dll",
-                "conditions": [
-                  ['"<!(node gs4js-env-home.js)" == ""', {
-                    "GS4JS_HOME%": "C:/gs/bin"
-                  }]
-                ]
-              }
-            }]
-          ],
+          "variables": {
+            "MAGICK%": '<!(python magick-cli-path.py)'
+          } ,
           "msvs_settings": {
             "VCCLCompilerTool": {
               "ExceptionHandling": 1
             }
           },
-          "libraries": ["<(module_root_dir)/build/Release/<(GS4JS_LIB)"],
-          "copies": [
-            {
-              "destination": "<(module_root_dir)/build/Release",
-              "files": ["<(GS4JS_HOME)/<(GS4JS_DLL)", "<(GS4JS_HOME)/<(GS4JS_LIB)"]
-            }
+          "libraries": [
+            '-l<(MAGICK)/lib/CORE_RL_MagickWand_.lib',
+            '-l<(MAGICK)/lib/CORE_RL_MagickCore_.lib'
+          ],
+          "include_dirs": [
+            '<(MAGICK)/include'
           ]
         }],
         ['OS=="mac"', {
