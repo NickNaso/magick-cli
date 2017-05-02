@@ -50,7 +50,7 @@ describe('Test magick-cli', function () {
         expect(MagickCLI.version()).toContain("7.");
     })
 
-    /*it('Should execute ImageMagick command synchronous', function () {
+    it('Should execute ImageMagick command synchronous', function () {
         try {
             MagickCLI.executeSync(cmdSync)
         } catch (err) {
@@ -68,6 +68,6 @@ describe('Test magick-cli', function () {
             console.log(err)
             done()
         })
-    })*/
+    })
 
 })

@@ -71,6 +71,8 @@
     "README.md",
     "CHANGELOG.md",
     "index.js",
+    "binding.gyp",
+    "magick-cli-path.py",
     "lib/",
     "src/"
   ]
