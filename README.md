@@ -32,6 +32,23 @@ giga-, or tera-pixel image sizes.
 
 * [ImageMagick command-line](http://imagemagick.org/script/command-line-processing.php)
 
+<a name="motivations"></a>
+
+## Motivations
+
+At the time i created this module i was not able to find any module on npm that execute ImageMagick command through its C API,
+otherwise there were some module that call ImageMagick through the execution of the corresponding shell command. This is a
+good way to start using some library from node, but there are the following drawbacks:
+
+* **Performance** - The call to the shell command take more time and more resources than calling a library C or C++ API directly from Node.js environment.
+
+* **Errror handler** - Sometimes you cannot intercept and handle errors in a good and a proper way.
+
+To fit all needs MagickCLI has sync and async methods so it could be used in a web application where it's very important
+to not block the event loop, so all requests will be served without any delay originated by our application.
+
+[Understanding Node.js event loop](https://nodesource.com/blog/understanding-the-nodejs-event-loop/)
+
 <a name="team"></a>
 
 ## The Team
