@@ -129,6 +129,141 @@ launch this command:
 npm install magick-cli --save
 ```
 
+<a name="usage"></a>
+
+## Usage
+
+```js
+'use strict'
+
+const MagickCLI = require('magick-cli')
+
+try {
+  // Take decision based on ImageMagick version
+  const version = MagickCLI.version()
+  console.log(version)
+  MagickCLI.executeSync('magick input.png -resize 50% output.png')
+} catch (err) {
+  // Handle error
+  throw err
+}
+```
+
+## API
+
+### version
+
+**version()** method returns an string that represent the version of ImageMagick library
+installed on the system. It is important in those circumstances where you have to take
+decision based on different version.
+
+#### Example - version
+
+```js
+'use strict'
+
+const MagickCLI = require('magick-cli')
+
+try {
+  const version = MagickCLI.version()
+  console.log(version)
+  // Take decision based on ImageMagick version
+  if (version != 7.0.1) {
+    // ... some stuff
+  } else {
+    // ... other stuff
+  }
+} catch (err) {
+  // Handle error
+  throw err
+}
+```
+
+### executeSync
+
+**executeSync(cmd)** method takes the ImageMagick command parameters in input as a string and executes in a synchronous way.
+If something wrong happens in calling this method an Error with description and code error will be thrown.
+
+#### Example - executeSync
+
+```js
+'use strict'
+
+const MagickCLI = require('magick-cli')
+
+try {
+  MagickCLI.executeSync('magick input.png -resize 50% output.png')
+} catch (err) {
+  // Handle error
+  throw err
+}
+```
+
+### execute
+
+**execute(cmd, callback)** method takes in input the ImageMagick command parameters as a string and an optional callback. 
+The execution will be asynchronous so this ensure better performance especially in a web application enviroment, because 
+it'll not block the Node.Js event loop.
+This method has an optional callback function as input, in that case, a possible error will be handled by this function. 
+If noone function will be provided the method returns a Promise that will be resolved or rejected as reported in the 
+following example.
+
+#### Example - execute
+
+```js
+'use strict'
+
+const MagickCLI = require('magick-cli')
+
+let cmd = 'magick input.png -resize 50% output.png'
+MagickCLI.execute(cmd, function (err) {
+  if (err) {
+    console.log("Ooops... something wrong happened")
+  }
+})
+
+```
+
+```js
+'use strict'
+
+const MagickCLI = require('magick-cli')
+
+let cmd = '-magick input.png -resize 50% output.png'
+MagickCLI.execute(cmd)
+.then(() => {
+  console.log("All is ok")
+})
+.catch((err) => {
+ console.log("Ooops... something wrong happened")
+})
+
+```
+
+### Error
+
+The error raised from **magick-cli** in all of its method is an instance of Error object that cointains a message that
+describes what happened and at the same time cointains the ImageMagick error code so you can inspect what happened in a better
+way.
+
+### Min and Max supported revision
+
+This module was built based on ImageMagick C API that is compatible with some specifics versions. The module has two
+properties  **MIN_SUPPORTED_REVISION** and **MAX_SUPPORTED_REVISION** which respectively indicate the minimum and maximum
+supported ImageMagick's version.
+
+#### Example - Min and Max supported revision
+
+```js
+'use strict'
+
+const MagickCLI = require('magick-cli')
+
+console.log(MagickCLI.MIN_SUPPORTED_REVISION)
+console.log(MagickCLI.MAX_SUPPORTED_REVISION)
+
+```
+
 <a name="team"></a>
 
 ## The Team
