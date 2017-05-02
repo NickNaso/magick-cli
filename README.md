@@ -49,6 +49,47 @@ to not block the event loop, so all requests will be served without any delay or
 
 [Understanding Node.js event loop](https://nodesource.com/blog/understanding-the-nodejs-event-loop/)
 
+<a name="prerequisites"></a>
+
+## Prerequisites
+
+Before installing MagickCLI you need to assure you have the following prerequisites:
+
+* **Node.JS** see: [Installing Node.js via package manager](https://nodejs.org/en/download/package-manager/)
+
+* **Node.js native addon build tool** see: [node-gyp](https://github.com/nodejs/node-gyp)
+
+* **ImageMagick** for your Operating System.
+
+## At moment MagickCLI is fully compatible with ImgameMagick from version 7.0.1 to 7.0.5
+
+## Linux
+
+You can install ImageMagick from binary or directly from source:
+
+* [Install from soucre](http://imagemagick.org/script/install-source.php#unix)
+
+* [Install from binary](http://imagemagick.org/script/download.php#unix)
+
+Maybe your linux distribution has already packaged ImageMagick version 7.0.1 or above
+so you can install it using your package manager and all is more simple.
+
+## Windows
+
+* Download the installer for your platform from this link [ImageMagick Windows Installer](http://imagemagick.org/script/download.php#windows)
+
+* Install ImageMagick on your system.
+
+## macOS
+
+* Install Homebrew following the official guide [here](https://brew.sh/index_it.html)
+
+* Open terminal and install ImageMagick
+
+```bash
+brew install imagemagick
+``` 
+
 <a name="team"></a>
 
 ## The Team
