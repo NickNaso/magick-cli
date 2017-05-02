@@ -18,7 +18,65 @@
 
 #include "magick-cli.h"
 
-class ImageMagickWorker : public AsyncWorker {
+// Lifeclycle management for the MagickCLI instance
+class MagickCLIManager
+{
+  private:
+    static bool exists;
+    mutex mc;
+    static MagickCLIManager *instance;
+    MagickCLIManager() 
+    {
+        // NOOP
+    }
+
+  public:
+    static MagickCLIManager *GetInstance();
+    ~MagickCLIManager() 
+    {
+        exists = false;
+    };
+    void Execute(int gsargc, char *gsargv[]);
+};
+
+bool MagickCLIManager::exists = false;
+MagickCLIManager *MagickCLIManager::instance = NULL;
+// Static method that create or simple return the instance of the MagickCLItManager
+// following the singleton design pattern
+MagickCLIManager *MagickCLIManager::GetInstance()
+{
+    if (!exists)
+    {
+        instance = new MagickCLIManager();
+        exists = true;
+        return instance;
+    }
+    else
+    {
+        return instance;
+    }
+}
+
+void MagickCLIManager::Execute(int imargc, char *imargv[])
+{
+    lock_guard<mutex> lk(mc);
+    MagickCoreGenesis("MagickCLI", MagickFalse);
+    {
+        ImageInfo *image_info = AcquireImageInfo();
+        ExceptionInfo *exception = AcquireExceptionInfo();
+        (void)MagickImageCommand(image_info, imargc, imargv, NULL, exception);
+        if (exception->severity != UndefinedException) 
+        {
+            throw "Sorry error happened executing ImageMagick command. Error: " + string(exception->reason) + ". " + string(exception->description);
+        }
+        image_info = DestroyImageInfo(image_info);
+        exception = DestroyExceptionInfo(exception);
+    }
+    MagickCoreTerminus();  
+}
+
+class ImageMagickWorker : public AsyncWorker 
+{
     public:
         ImageMagickWorker(Callback *callback, string RAWcmd) 
             : AsyncWorker(callback), RAWcmd(RAWcmd), res(0) {}
@@ -35,28 +93,27 @@ class ImageMagickWorker : public AsyncWorker {
             for(int i = 0; i < imargc; i++) {
                 imargv[i] = (char*)explodedCmd[i].c_str();
             }
-            MagickCoreGenesis("MagickCLI", MagickFalse);
-            {
-                ImageInfo *image_info = AcquireImageInfo();
-                ExceptionInfo *exception = AcquireExceptionInfo();
-                (void)MagickImageCommand(image_info, imargc, imargv, NULL, exception);
-                if (exception->severity != UndefinedException) {
-                    msg <<  "Sorry error happened executing ImageMagick command. Error: " << exception->reason << ". " << exception->description;
-                    res = 1;
-                } else {
-                    res = 0;
-                }
+            try 
+            { 
+                MagickCLIManager *mc = MagickCLIManager::GetInstance();
+                mc->Execute(imargc, imargv);
                 delete[] imargv;
-                image_info = DestroyImageInfo(image_info);
-                exception = DestroyExceptionInfo(exception);
+                res = 0;
             }
-            MagickCoreTerminus();
+            catch (exception &e)
+            {
+                delete[] imargv;
+                msg << e.what();
+                res = 1;
+            }
         }
 
-        void HandleOKCallback() {
+        void HandleOKCallback() 
+        {
             Nan::HandleScope();
             Local<Value> argv[1];
-            if (res == 0) {
+            if (res == 0) 
+            {
                 argv[0] = Null();
             } else {
                 argv[0] = Error(Nan::New<String>(msg.str()).ToLocalChecked());
@@ -103,29 +160,21 @@ NAN_METHOD(ExecuteSync)
         explodedCmd.push_back(RAWcmd); 
     int imargc = static_cast<int>(explodedCmd.size());
     char ** imargv = new char*[imargc];
-    for(int i = 0; i < imargc; i++) {
+    for(int i = 0; i < imargc; i++) 
+    {
         imargv[i] = (char*)explodedCmd[i].c_str();
     }
-    MagickCoreGenesis("MagickCLI", MagickFalse);
+    try
     {
-        ImageInfo *image_info = AcquireImageInfo();
-        ExceptionInfo *exception = AcquireExceptionInfo();
-        (void)MagickImageCommand(image_info, imargc, imargv, NULL, exception);
-        if (exception->severity != UndefinedException)
-        {
-            delete[] imargv;
-            stringstream msg; 
-            msg << "Sorry error happened executing ImageMagick command. Error: " << exception->reason << ". " << exception->description;
-            image_info = DestroyImageInfo(image_info);
-            exception = DestroyExceptionInfo(exception);
-            MagickCoreTerminus();
-            return Nan::ThrowError(Nan::New<String>(msg.str()).ToLocalChecked()); 
-        } 
+        MagickCLIManager *mc = MagickCLIManager::GetInstance();
+        mc->Execute(imargc, imargv);
         delete[] imargv;
-        image_info = DestroyImageInfo(image_info);
-        exception = DestroyExceptionInfo(exception);
     }
-    MagickCoreTerminus();
+    catch (exception &e)
+    {
+        delete[] imargv;
+        return Nan::ThrowError(Nan::New<String>(e.what()).ToLocalChecked());
+    }
     return;  
 }
 
