@@ -90,6 +90,45 @@ so you can install it using your package manager and all is more simple.
 brew install imagemagick
 ``` 
 
+* Open terminal and install **pkg-info**
+
+```bash
+brew install pkg-info
+```
+
+<a name="install"></a>
+
+## Installation
+
+If you want to use **MagickCLI** you have to install it. There are two methods for that:
+
+In dependencies of your ```package.json``` add the following item:
+
+```json
+"magick-cli": "version"
+```
+
+then digit
+
+```console
+npm install
+```
+
+**Example**:
+
+```json
+"magick-cli": "*" for the latest version
+"magick-cli": "1.0.0" for the version 1.0.0
+```
+
+**OR**
+
+launch this command:
+
+```console
+npm install magick-cli --save
+```
+
 <a name="team"></a>
 
 ## The Team
