@@ -16,6 +16,22 @@
 * [Acknowledgements](#acknowledgements)
 * [License](#license)
 
+<a name="introduction"></a>
+
+## Introduction
+
+**ImageMagick** is a free and open-source software suite for displaying, converting, and editing raster and vector 
+image files. It utilizes multiple computational threads to increase performance and can read, process, or write mega-, 
+giga-, or tera-pixel image sizes.
+
+### More resource and info about ImageMagick
+
+* [Introduction to ImageMagick](http://imagemagick.org/script/index.php)
+
+* [ImageMagick on Wikipedia](https://en.wikipedia.org/wiki/ImageMagick)
+
+* [ImageMagick command-line](http://imagemagick.org/script/command-line-processing.php)
+
 <a name="team"></a>
 
 ## The Team
