@@ -168,7 +168,7 @@ try {
   const version = MagickCLI.version()
   console.log(version)
   // Take decision based on ImageMagick version
-  if (version != 7.0.1) {
+  if (version != '7.0.1') {
     // ... some stuff
   } else {
     // ... other stuff
