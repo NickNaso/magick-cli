@@ -22,6 +22,9 @@
 
 #include <sstream>
 #include <string>
+#include <mutex>
+#include <exception>
+
 
 #include <node.h>                       
 #include <v8.h>
