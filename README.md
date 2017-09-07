@@ -61,7 +61,7 @@ Before installing MagickCLI you need to assure you have the following prerequisi
 
 * **ImageMagick** for your Operating System.
 
-## At moment MagickCLI is fully compatible with ImgameMagick from version 7.0.1 to 7.0.5
+## At the moment MagickCLI is fully compatible with ImageMagick from version 7.0.1 to 7.0.5
 
 ## Linux
 
