@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Nicola Del Gobbo
+ * Copyright (c) 2018 Nicola Del Gobbo
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the license at http://www.apache.org/licenses/LICENSE-2.0
@@ -25,13 +25,8 @@
 #include <mutex>
 #include <exception>
 
+#include <napi.h>
 
-#include <node.h>                       
-#include <v8.h>
-#include <nan.h>
-
-using namespace Nan;
-using namespace v8;
 using namespace std;
 
 // MagickCore

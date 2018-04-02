@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Nicola Del Gobbo
+ * Copyright (c) 2018 Nicola Del Gobbo
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the license at http://www.apache.org/licenses/LICENSE-2.0
@@ -76,15 +76,14 @@ void MagickCLIManager::Execute(int imargc, char *imargv[])
     MagickCoreTerminus();  
 }
 
-class ImageMagickWorker : public AsyncWorker 
+class ImageMagickWorker : public Napi::AsyncWorker 
 {
     public:
-        ImageMagickWorker(Callback *callback, string RAWcmd) 
-            : AsyncWorker(callback), RAWcmd(RAWcmd), res(0) {}
+        ImageMagickWorker(Napi::Function& callback, string RAWcmd) 
+            : Napi::AsyncWorker(callback), RAWcmd(RAWcmd) {}
         ~ImageMagickWorker() {} 
 
         void Execute() {
-            res = 0;
             vector<string> explodedCmd;
             istringstream iss(RAWcmd);
             for (string RAWcmd; iss >> RAWcmd;)
@@ -99,62 +98,50 @@ class ImageMagickWorker : public AsyncWorker
                 MagickCLIManager *mc = MagickCLIManager::GetInstance();
                 mc->Execute(imargc, imargv);
                 delete[] imargv;
-                res = 0;
             }
             catch (exception &e)
             {
                 delete[] imargv;
-                msg << e.what();
-                res = 1;
+                SetError(Napi::String::New(Env(), e.what()));
             }
         }
 
-        void HandleOKCallback() 
+        void OnOK() 
         {
-            Nan::HandleScope();
-            Local<Value> argv[1];
-            if (res == 0) 
-            {
-                argv[0] = Null();
-            } else {
-                argv[0] = Error(Nan::New<String>(msg.str()).ToLocalChecked());
-            }
-            callback->Call(1, argv);
+            Napi::HandleScope scope(Env());
+            Callback().Call({Env().Null()});
         } 
 
         private:
             string RAWcmd;
-            int res;
-            stringstream msg;
 };
 
-NAN_METHOD(Version)
+Napi::Value Version(const Napi::CallbackInfo& info)
 {
-    Nan::HandleScope();
-    info.GetReturnValue().Set(Nan::New<String>(MagickLibVersionText).ToLocalChecked());
+    Napi::Env env = info.Env();
+    return Napi::String::New(env, MagickLibVersionText);
 }
 
-NAN_METHOD(Execute)
+void Execute(const Napi::CallbackInfo& info)
 {
-    Callback *callback = new Callback(info[1].As<Function>());
-    Local<String> JScmd = Local<String>::Cast(info[0]);
-    string RAWcmd = *String::Utf8Value(JScmd);
-    AsyncQueueWorker(new ImageMagickWorker(callback, RAWcmd));
+    Napi::Function callback = info[1].As<Napi::Function>();
+    string RAWcmd = info[0].As<Napi::String>().Utf8Value();
+    ImageMagickWorker* im = new ImageMagickWorker(callback, RAWcmd);
+    im->Queue();
 }
 
-NAN_METHOD(ExecuteSync)
+void ExecuteSync(const Napi::CallbackInfo& info)
 {
-    Nan::HandleScope();
+    Napi::Env env = info.Env();
     if (info.Length() < 1)
     {
-        return Nan::ThrowError("Sorry executeSync() method requires 1 argument that represent the ImageMagick command.");
+        throw Napi::Error::New(env, "Sorry executeSync() method requires 1 argument that represent the ImageMagick command.");
     }
-    if (!info[0]->IsString())
+    if (!info[0].IsString())
     {
-        return Nan::ThrowError("Sorry executeSync() method's argument should be a string.");
+        throw Napi::Error::New(env, "Sorry executeSync() method's argument should be a string.");
     }
-    Local<String> IMcmd = Local<String>::Cast(info[0]);
-    string RAWcmd = *String::Utf8Value(IMcmd);
+    string RAWcmd = info[0].As<Napi::String>().Utf8Value();
     vector<string> explodedCmd;
     istringstream iss(RAWcmd);
     for (string RAWcmd; iss >> RAWcmd;)
@@ -174,25 +161,23 @@ NAN_METHOD(ExecuteSync)
     catch (exception &e)
     {
         delete[] imargv;
-        return Nan::ThrowError(Nan::New<String>(e.what()).ToLocalChecked());
+        throw Napi::Error::New(env, e.what());
     }
     return;  
 }
 
 //////////////////////////// INIT & CONFIG MODULE //////////////////////////////
 
-NAN_MODULE_INIT(Init)
-{
-    Nan::Set(target, Nan::New("version").ToLocalChecked(),
-                 Nan::New<FunctionTemplate>(Version)->GetFunction());
-
-    Nan::Set(target, Nan::New("execute").ToLocalChecked(),
-                 Nan::New<FunctionTemplate>(Execute)->GetFunction());
-
-    Nan::Set(target, Nan::New("executeSync").ToLocalChecked(),
-                 Nan::New<FunctionTemplate>(ExecuteSync)->GetFunction());
+Napi::Object Init(Napi::Env env, Napi::Object exports) {
+    exports.Set(Napi::String::New(env, "version"),
+        Napi::Function::New(env, Version));
+    exports.Set(Napi::String::New(env, "execute"),
+        Napi::Function::New(env, Execute));
+    exports.Set(Napi::String::New(env, "executeSync"), 
+        Napi::Function::New(env, ExecuteSync));
+    return exports;
 }
 
-NODE_MODULE(MagickCLI, Init)
+NODE_API_MODULE(NODE_GYP_MODULE_NAME, Init)
 
 ////////////////////////////////////////////////////////////////////////////////
