@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.7-n-api / 2018-04-02
+
+* Added support for ImageMagick 7.0.7
+* N-API porting of magick-cli - Fix issue [#11](https://github.com/NickNaso/magick-cli/issues/11)
+
 ## 1.0.3 / 2017-09-07
 Fixed typo - PR from [dlemstra](https://github.com/dlemstra) [#10](https://github.com/NickNaso/magick-cli/pull/10)
 ## 1.0.1 / 2017-07-12
