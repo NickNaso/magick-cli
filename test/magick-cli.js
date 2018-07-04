@@ -19,9 +19,6 @@
 
 'use strict'
 
-/*!
- * Module dependencies
- */
 const MagickCLI = require('../')
 const fs = require('fs')
 
@@ -35,17 +32,16 @@ const cmdAsync = `magick ${source} -resize 50% ${outAsync}`
 
 console.log('Start cleanup ...')
 try {
-  fs.unlinkSync(outSync)
-  fs.unlinkSync(outAsync)
-  console.log('Cleanup competed')
+    fs.unlinkSync(outSync)
+    fs.unlinkSync(outAsync)
+    console.log('Cleanup competed')
 } catch (err) {
-  console.log('Nothing to clean');
+    console.log('Nothing to clean');
 }
 
 describe('Test magick-cli', function () {
 
     it('Should return the version of ImageMagick', function () {
-        console.log(MagickCLI.version())
         expect(MagickCLI.version()).not.toBe(null)
         expect(MagickCLI.version()).toContain("7.");
     })
