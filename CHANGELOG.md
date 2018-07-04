@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0 / 2018-07-04
+
+* Complete the port to N-API using *node-addon-api*
+
 ## 1.0.7-n-api / 2018-04-02
 
 * Added support for ImageMagick 7.0.7
