@@ -70,6 +70,7 @@
     "LICENSE",
     "README.md",
     "CHANGELOG.md",
+    "CODE_OF_CONDUCT.md",
     "index.js",
     "binding.gyp",
     "magick-cli-path.py",

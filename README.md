@@ -12,6 +12,7 @@
 * [Installation](#install)
 * [Installation options](#installoptions)
 * [Usage](#usage)
+* [Code of conduct](CODE_OF_CONDUCT.md)
 * [Team](#team)
 * [Acknowledgements](#acknowledgements)
 * [License](#license)
